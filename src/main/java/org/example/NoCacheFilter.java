@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebFilter({ "*.html", "*.css", "*.gif", "/login", "/home" })
+@WebFilter({ "*.html", "*.css", "*.gif", "/login", "/home", "/logout" })
 public class NoCacheFilter implements Filter {
 
     @Override

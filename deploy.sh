@@ -10,7 +10,7 @@ PROJECT_NAME="Memes"
 TOMCAT_WEBAPPS="/var/lib/tomcat10/webapps"
 WAR_NAME="Memes-1.0-SNAPSHOT.war"
 WAR_PATH="$PROJECT_DIR/target/$WAR_NAME"
-APP_CHECK_URL="http://localhost:8080/success"
+APP_CHECK_URL="http://localhost:8080/login"
 
 # Modo padrao: rapido (sem clean)
 USE_CLEAN=false

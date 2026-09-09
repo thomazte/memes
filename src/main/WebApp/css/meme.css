@@ -62,17 +62,7 @@ body {
     transition: transform 0.2s ease;
 }
 
-.container.home {
-    width: min(92vw, 560px);
-    box-shadow:
-        8px 8px 0 var(--meme-cyan),
-        0 0 0 3px var(--meme-lime);
-    transform: rotate(1deg);
-    animation: panel-in 0.55s cubic-bezier(0.2, 1.4, 0.4, 1) both;
-}
-
 .container:hover { transform: rotate(0.6deg) scale(1.01); }
-.container.home:hover { transform: rotate(0.4deg) scale(1.01); }
 .container.tremendo { animation: shake 0.45s ease-in-out 2; }
 
 h1 {
@@ -87,29 +77,13 @@ h1 {
     text-shadow: 3px 3px 0 var(--meme-cyan);
 }
 
-.container.home h1 {
-    text-shadow: 3px 3px 0 var(--meme-magenta);
-}
-
-.tagline,
-.caption {
+.tagline {
     margin: 0 0 22px;
     font-family: Anton, Impact, sans-serif;
+    font-size: 1.05rem;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--ink);
-}
-
-.tagline { font-size: 1.05rem; }
-
-.caption {
-    font-size: clamp(1.4rem, 5vw, 2rem);
-    line-height: 1.15;
-    color: #fff;
-    -webkit-text-stroke: 2px var(--ink);
-    paint-order: stroke fill;
-    text-shadow: 3px 3px 0 var(--meme-cyan);
-    animation: caption-pop 1.4s ease-in-out infinite;
 }
 
 form { width: 100%; margin-top: 8px; }
@@ -169,6 +143,19 @@ input:focus {
 
 .erro-login.visivel { display: block; }
 
+.mensagem-destaque {
+    display: block;
+    margin: 12px 0 0;
+    padding: 8px 10px;
+    font-family: Anton, Impact, sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.03em;
+    color: #fff;
+    background: var(--meme-magenta);
+    border: 3px solid var(--ink);
+    text-transform: uppercase;
+}
+
 .gif-erro {
     display: none;
     width: 140px;
@@ -184,7 +171,21 @@ input:focus {
 
 .gif-erro.visivel { display: block; }
 
-button {
+.gif-destaque {
+    display: block;
+    width: 140px;
+    max-width: 45%;
+    max-height: 110px;
+    height: auto;
+    object-fit: contain;
+    margin: 16px auto 0;
+    border: 3px solid var(--ink);
+    border-radius: 2px;
+    box-shadow: 4px 4px 0 var(--meme-cyan);
+}
+
+button,
+.btn-acao {
     display: block;
     width: 100%;
     margin-top: 18px;
@@ -197,58 +198,30 @@ button {
     font-size: 1.35rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+    text-decoration: none;
+    text-align: center;
     cursor: pointer;
+    box-sizing: border-box;
     box-shadow: 5px 5px 0 var(--ink);
     transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
 }
 
-button:hover {
+button:hover,
+.btn-acao:hover {
     background: var(--meme-yellow);
     transform: translate(-2px, -2px);
     box-shadow: 7px 7px 0 var(--ink);
 }
 
-button:active {
+button:active,
+.btn-acao:active {
     transform: translate(2px, 2px);
     box-shadow: 2px 2px 0 var(--ink);
-}
-
-.meme-frame {
-    display: inline-block;
-    padding: 8px;
-    background: var(--ink);
-    border: 4px solid var(--ink);
-    box-shadow: 6px 6px 0 var(--meme-yellow);
-    transform: rotate(-1.5deg);
-    transition: transform 0.2s ease;
-}
-
-.meme-frame:hover { transform: rotate(1.5deg) scale(1.02); }
-
-.gif-peteco {
-    display: block;
-    width: 220px;
-    max-width: 70%;
-    max-height: 180px;
-    height: auto;
-    object-fit: contain;
-    margin: 0 auto;
-    border: 3px solid #fff;
 }
 
 @keyframes brand-bounce {
     0%, 100% { transform: translateY(0) rotate(-2deg); }
     50% { transform: translateY(-6px) rotate(2deg); }
-}
-
-@keyframes caption-pop {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.04); }
-}
-
-@keyframes panel-in {
-    from { opacity: 0; transform: rotate(-6deg) scale(0.86); }
-    to { opacity: 1; transform: rotate(1deg) scale(1); }
 }
 
 @keyframes shake {
@@ -258,14 +231,11 @@ button:active {
 }
 
 @media (max-width: 480px) {
-    .container,
-    .container.home {
+    .container {
         transform: none;
     }
 
-    .container:hover,
-    .container.home:hover,
-    .meme-frame {
+    .container:hover {
         transform: none;
     }
 }

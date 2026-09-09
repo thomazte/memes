@@ -5,6 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
@@ -28,7 +29,9 @@ public class LoginServlet extends HttpServlet {
         String senha = req.getParameter("senha");
 
         if (USUARIO_VALIDO.equals(usuario) && SENHA_VALIDA.equals(senha)) {
-            resp.sendRedirect(req.getContextPath() + "/html/home.html");
+            HttpSession session = req.getSession(true);
+            session.setAttribute("usuario", usuario);
+            resp.sendRedirect(req.getContextPath() + "/home");
         } else {
             resp.sendRedirect(req.getContextPath() + "/html/login.html?erro=1");
         }
