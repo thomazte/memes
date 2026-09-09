@@ -9,8 +9,8 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebServlet("/home")
-public class HomeServlet extends HttpServlet {
+@WebServlet("/admin")
+public class AdminServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -23,11 +23,11 @@ public class HomeServlet extends HttpServlet {
         }
 
         String papel = (String) session.getAttribute("papel");
-        if (AuthService.Papel.ADMIN.name().equals(papel)) {
-            resp.sendRedirect(req.getContextPath() + "/admin");
+        if (!AuthService.Papel.ADMIN.name().equals(papel)) {
+            resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }
 
-        req.getRequestDispatcher("/html/home.html").forward(req, resp);
+        req.getRequestDispatcher("/html/admin.html").forward(req, resp);
     }
 }

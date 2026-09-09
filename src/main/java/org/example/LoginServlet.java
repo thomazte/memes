@@ -12,9 +12,6 @@ import java.io.IOException;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-    private static final String USUARIO_VALIDO = "admin";
-    private static final String SENHA_VALIDA = "123456";
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -28,12 +25,21 @@ public class LoginServlet extends HttpServlet {
         String usuario = req.getParameter("usuario");
         String senha = req.getParameter("senha");
 
-        if (USUARIO_VALIDO.equals(usuario) && SENHA_VALIDA.equals(senha)) {
-            HttpSession session = req.getSession(true);
-            session.setAttribute("usuario", usuario);
-            resp.sendRedirect(req.getContextPath() + "/home");
-        } else {
+        AuthService.UsuarioAutenticado autenticado = AuthService.autenticar(usuario, senha);
+
+        if (autenticado == null) {
             resp.sendRedirect(req.getContextPath() + "/html/login.html?erro=1");
+            return;
+        }
+
+        HttpSession session = req.getSession(true);
+        session.setAttribute("usuario", autenticado.nome());
+        session.setAttribute("papel", autenticado.papel().name());
+
+        if (autenticado.papel() == AuthService.Papel.ADMIN) {
+            resp.sendRedirect(req.getContextPath() + "/admin");
+        } else {
+            resp.sendRedirect(req.getContextPath() + "/home");
         }
     }
 }
