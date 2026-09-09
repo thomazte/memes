@@ -1,0 +1,271 @@
+/* Visual compartilhado de meme — login e home */
+:root {
+    --meme-yellow: #ffe600;
+    --meme-lime: #b8ff00;
+    --meme-magenta: #ff2d6a;
+    --meme-cyan: #00e5ff;
+    --ink: #111111;
+    --panel: #fff8dc;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Comic Neue", "Comic Sans MS", cursive;
+    color: var(--ink);
+    background-color: #1a1a2e;
+    background-image:
+        radial-gradient(circle at 20% 20%, rgba(255, 230, 0, 0.35) 0 18%, transparent 19%),
+        radial-gradient(circle at 80% 15%, rgba(255, 45, 106, 0.3) 0 14%, transparent 15%),
+        radial-gradient(circle at 70% 80%, rgba(0, 229, 255, 0.28) 0 16%, transparent 17%),
+        repeating-linear-gradient(-18deg, #22223a 0 14px, #1a1a2e 14px 28px);
+    overflow-x: hidden;
+}
+
+.stage {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+}
+
+.brand {
+    margin: 0 0 18px;
+    font-family: Anton, Impact, sans-serif;
+    font-size: clamp(3rem, 12vw, 5.5rem);
+    letter-spacing: 0.08em;
+    line-height: 0.9;
+    color: var(--meme-yellow);
+    text-transform: uppercase;
+    text-shadow:
+        4px 4px 0 var(--ink),
+        -2px -2px 0 var(--meme-magenta),
+        6px 0 0 var(--meme-cyan);
+    animation: brand-bounce 1.8s ease-in-out infinite;
+}
+
+.container {
+    width: min(92vw, 420px);
+    padding: 28px 24px 32px;
+    background: var(--panel);
+    text-align: center;
+    border: 5px solid var(--ink);
+    border-radius: 4px;
+    box-shadow:
+        8px 8px 0 var(--meme-magenta),
+        0 0 0 3px var(--meme-yellow);
+    transform: rotate(-1.2deg);
+    transition: transform 0.2s ease;
+}
+
+.container.home {
+    width: min(92vw, 560px);
+    box-shadow:
+        8px 8px 0 var(--meme-cyan),
+        0 0 0 3px var(--meme-lime);
+    transform: rotate(1deg);
+    animation: panel-in 0.55s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+
+.container:hover { transform: rotate(0.6deg) scale(1.01); }
+.container.home:hover { transform: rotate(0.4deg) scale(1.01); }
+.container.tremendo { animation: shake 0.45s ease-in-out 2; }
+
+h1 {
+    margin: 0 0 6px;
+    font-family: Anton, Impact, sans-serif;
+    font-size: clamp(2.4rem, 8vw, 3.2rem);
+    letter-spacing: 0.04em;
+    color: #fff;
+    text-transform: uppercase;
+    -webkit-text-stroke: 2px var(--ink);
+    paint-order: stroke fill;
+    text-shadow: 3px 3px 0 var(--meme-cyan);
+}
+
+.container.home h1 {
+    text-shadow: 3px 3px 0 var(--meme-magenta);
+}
+
+.tagline,
+.caption {
+    margin: 0 0 22px;
+    font-family: Anton, Impact, sans-serif;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.tagline { font-size: 1.05rem; }
+
+.caption {
+    font-size: clamp(1.4rem, 5vw, 2rem);
+    line-height: 1.15;
+    color: #fff;
+    -webkit-text-stroke: 2px var(--ink);
+    paint-order: stroke fill;
+    text-shadow: 3px 3px 0 var(--meme-cyan);
+    animation: caption-pop 1.4s ease-in-out infinite;
+}
+
+form { width: 100%; margin-top: 8px; }
+
+.form-group {
+    margin-bottom: 14px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-family: Anton, Impact, sans-serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    height: 48px;
+    padding: 0 14px;
+    border: 3px solid var(--ink);
+    border-radius: 2px;
+    background: #fff;
+    font-family: "Comic Neue", "Comic Sans MS", cursive;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink);
+    outline: none;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+input::placeholder {
+    color: #888;
+    font-weight: 700;
+}
+
+input:focus {
+    box-shadow: 4px 4px 0 var(--meme-lime);
+    transform: translate(-1px, -1px);
+}
+
+.erro-login {
+    display: none;
+    margin: 12px 0 0;
+    padding: 8px 10px;
+    font-family: Anton, Impact, sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.03em;
+    color: #fff;
+    background: var(--meme-magenta);
+    border: 3px solid var(--ink);
+    text-transform: uppercase;
+}
+
+.erro-login.visivel { display: block; }
+
+.gif-erro {
+    display: none;
+    width: 140px;
+    max-width: 45%;
+    max-height: 110px;
+    height: auto;
+    object-fit: contain;
+    margin: 16px auto 0;
+    border: 3px solid var(--ink);
+    border-radius: 2px;
+    box-shadow: 4px 4px 0 var(--meme-cyan);
+}
+
+.gif-erro.visivel { display: block; }
+
+button {
+    display: block;
+    width: 100%;
+    margin-top: 18px;
+    padding: 14px 20px;
+    border: 4px solid var(--ink);
+    border-radius: 2px;
+    background: var(--meme-lime);
+    color: var(--ink);
+    font-family: Anton, Impact, sans-serif;
+    font-size: 1.35rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 5px 5px 0 var(--ink);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+
+button:hover {
+    background: var(--meme-yellow);
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0 var(--ink);
+}
+
+button:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--ink);
+}
+
+.meme-frame {
+    display: inline-block;
+    padding: 8px;
+    background: var(--ink);
+    border: 4px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--meme-yellow);
+    transform: rotate(-1.5deg);
+    transition: transform 0.2s ease;
+}
+
+.meme-frame:hover { transform: rotate(1.5deg) scale(1.02); }
+
+.gif-peteco {
+    display: block;
+    width: 220px;
+    max-width: 70%;
+    max-height: 180px;
+    height: auto;
+    object-fit: contain;
+    margin: 0 auto;
+    border: 3px solid #fff;
+}
+
+@keyframes brand-bounce {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-6px) rotate(2deg); }
+}
+
+@keyframes caption-pop {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+}
+
+@keyframes panel-in {
+    from { opacity: 0; transform: rotate(-6deg) scale(0.86); }
+    to { opacity: 1; transform: rotate(1deg) scale(1); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0) rotate(-1.2deg); }
+    25% { transform: translateX(-8px) rotate(-2deg); }
+    75% { transform: translateX(8px) rotate(1deg); }
+}
+
+@media (max-width: 480px) {
+    .container,
+    .container.home {
+        transform: none;
+    }
+
+    .container:hover,
+    .container.home:hover,
+    .meme-frame {
+        transform: none;
+    }
+}

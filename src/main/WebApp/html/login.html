@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Login | Memes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/meme.css?v=3">
+</head>
+<body>
+    <div class="stage">
+        <p class="brand">MEMES</p>
+        <div class="container">
+            <h1>LOGIN</h1>
+            <p class="tagline">ENTRE SE FOR CAPAZ</p>
+
+            <form action="../login" method="post">
+                <div class="form-group">
+                    <label for="usuario">Usuário</label>
+                    <input
+                        type="text"
+                        id="usuario"
+                        name="usuario"
+                        placeholder="Digite seu usuário"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+                    <input
+                        type="password"
+                        id="senha"
+                        name="senha"
+                        placeholder="Digite sua senha"
+                        required
+                    >
+                </div>
+
+                <p id="erro-login" class="erro-login">
+                    Usuário ou senha inválidos.
+                </p>
+
+                <button type="submit">ENTRAR</button>
+
+                <img
+                    id="gif-erro-login"
+                    class="gif-erro"
+                    src="../gifs/morre-diabo.gif"
+                    alt="Erro no login"
+                >
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("erro")) {
+            document.getElementById("erro-login").classList.add("visivel");
+            document.getElementById("gif-erro-login").classList.add("visivel");
+            document.querySelector(".container").classList.add("tremendo");
+        }
+    </script>
+</body>
+</html>
