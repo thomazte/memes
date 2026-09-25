@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Login | Memes</title>
+    <title>Cadastro | Memes</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
@@ -16,17 +16,17 @@
     <div class="stage">
         <p class="brand">MEMES</p>
         <div class="container">
-            <h1>LOGIN</h1>
-            <p class="tagline">ENTRE SE FOR CAPAZ</p>
+            <h1>CADASTRO</h1>
+            <p class="tagline">ENTRE PARA O CLUBE</p>
 
-            <form action="../login" method="post">
+            <form action="../cadastro" method="post">
                 <div class="form-group">
                     <label for="usuario">Usuário</label>
                     <input
                         type="text"
                         id="usuario"
                         name="usuario"
-                        placeholder="Digite seu usuário"
+                        placeholder="Escolha um usuário"
                         required
                     >
                 </div>
@@ -37,32 +37,34 @@
                         type="password"
                         id="senha"
                         name="senha"
-                        placeholder="Digite sua senha"
+                        placeholder="Escolha uma senha"
                         required
                     >
                 </div>
 
-                <p id="erro-login" class="erro-login">
-                    Usuário ou senha inválidos.
+                <p id="erro-cadastro" class="erro-login">
+                    Não foi possível cadastrar. Tente outro usuário.
                 </p>
 
-                <button type="submit">ENTRAR</button>
+                <button type="submit">CRIAR CONTA</button>
 
                 <img
-                    id="gif-erro-login"
+                    id="gif-erro-cadastro"
                     class="gif-erro"
                     src="../gifs/morre-diabo.gif"
-                    alt="Erro no login"
+                    alt="Erro no cadastro"
                 >
             </form>
+
+            <a class="btn-acao" href="/login">JÁ TENHO CONTA</a>
         </div>
     </div>
 
     <script>
         const params = new URLSearchParams(window.location.search);
         if (params.has("erro")) {
-            document.getElementById("erro-login").classList.add("visivel");
-            document.getElementById("gif-erro-login").classList.add("visivel");
+            document.getElementById("erro-cadastro").classList.add("visivel");
+            document.getElementById("gif-erro-cadastro").classList.add("visivel");
             document.querySelector(".container").classList.add("tremendo");
         }
     </script>

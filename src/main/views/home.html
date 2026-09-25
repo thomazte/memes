@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Home | Memes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/meme.css?v=7">
+</head>
+<body>
+    <div class="stage">
+        <p class="brand">MEMES</p>
+        <div class="container container-feed">
+            <h1>FEED</h1>
+            <p class="tagline">BUSQUE SEU MEME</p>
+
+            <form id="form-busca">
+                <div class="form-group">
+                    <label for="q">Busca</label>
+                    <input
+                        type="text"
+                        id="q"
+                        name="q"
+                        placeholder="Ex: drake, cat, distracted..."
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="tipo">Tipo</label>
+                    <select id="tipo" name="tipo">
+                        <option value="">Todos (img + gif)</option>
+                        <option value="img">Imagem</option>
+                        <option value="gif">GIF</option>
+                    </select>
+                </div>
+
+                <button type="submit">BUSCAR</button>
+            </form>
+
+            <p id="msg-busca" class="mensagem-destaque" hidden>Nenhum meme encontrado.</p>
+            <div class="feed-grade" id="feed-grade"></div>
+
+            <a class="btn-acao" href="/excluir">EXCLUIR CONTA</a>
+            <a class="btn-acao" href="/logout">SAIR</a>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById("form-busca");
+        const grade = document.getElementById("feed-grade");
+        const msg = document.getElementById("msg-busca");
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const q = document.getElementById("q").value.trim();
+            const tipo = document.getElementById("tipo").value;
+            if (!q) return;
+
+            grade.innerHTML = "";
+            msg.hidden = true;
+            msg.textContent = "Buscando memes...";
+            msg.hidden = false;
+
+            const params = new URLSearchParams({ q });
+            if (tipo) params.set("tipo", tipo);
+
+            try {
+                const resp = await fetch("../buscar?" + params.toString());
+                if (resp.status === 401) {
+                    window.location.href = "../views/login.html?erro=sessao";
+                    return;
+                }
+                const memes = await resp.json();
+                renderizar(memes);
+            } catch (e) {
+                msg.textContent = "Falha na busca. Tente de novo.";
+                msg.hidden = false;
+            }
+        });
+
+        function renderizar(memes) {
+            grade.innerHTML = "";
+            if (!Array.isArray(memes) || memes.length === 0) {
+                msg.textContent = "Nenhum meme encontrado.";
+                msg.hidden = false;
+                return;
+            }
+            msg.hidden = true;
+            for (const meme of memes) {
+                const card = document.createElement("article");
+                card.className = "feed-card feed-card-clicavel";
+                card.title = "Clique para baixar";
+
+                const img = document.createElement("img");
+                img.src = meme.caminho;
+                img.alt = meme.titulo || "meme";
+                img.loading = "lazy";
+
+                const titulo = document.createElement("p");
+                titulo.className = "feed-titulo";
+                titulo.textContent = meme.titulo || "";
+
+                const badge = document.createElement("span");
+                badge.className = "feed-tipo";
+                badge.textContent = (meme.tipo || "").toUpperCase();
+
+                card.appendChild(img);
+                card.appendChild(badge);
+                card.appendChild(titulo);
+                card.addEventListener("click", () => baixarMeme(meme));
+                grade.appendChild(card);
+            }
+        }
+
+        async function baixarMeme(meme) {
+            msg.hidden = true;
+            msg.textContent = "Baixando...";
+            msg.hidden = false;
+
+            const params = new URLSearchParams({
+                url: meme.caminho,
+                titulo: meme.titulo || "meme",
+                tipo: meme.tipo || ""
+            });
+
+            try {
+                const resp = await fetch("../download?" + params.toString());
+                if (resp.status === 401) {
+                    window.location.href = "../views/login.html?erro=sessao";
+                    return;
+                }
+                if (!resp.ok) {
+                    msg.textContent = "Falha no download. Tente outro meme.";
+                    msg.hidden = false;
+                    return;
+                }
+
+                const blob = await resp.blob();
+                const disposition = resp.headers.get("Content-Disposition") || "";
+                let nome = "meme";
+                const match = /filename=\"([^\"]+)\"/.exec(disposition);
+                if (match) {
+                    nome = match[1];
+                } else if ((meme.tipo || "").toLowerCase() === "gif") {
+                    nome = "meme.gif";
+                } else {
+                    nome = "meme.jpg";
+                }
+
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = nome;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                URL.revokeObjectURL(link.href);
+
+                window.location.href = "../views/download-ok.html";
+            } catch (e) {
+                msg.textContent = "Falha no download. Tente de novo.";
+                msg.hidden = false;
+            }
+        }
+    </script>
+</body>
+</html>

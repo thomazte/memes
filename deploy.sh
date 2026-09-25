@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# =============================
-# Configuracoes do projeto
-# =============================
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$SCRIPT_DIR"
 PROJECT_NAME="Memes"
@@ -12,7 +9,6 @@ WAR_NAME="Memes-1.0-SNAPSHOT.war"
 WAR_PATH="$PROJECT_DIR/target/$WAR_NAME"
 APP_CHECK_URL="http://localhost:8080/login"
 
-# Modo padrao: rapido (sem clean)
 USE_CLEAN=false
 STATUS_ONLY=false
 BACKUP_DIR=""

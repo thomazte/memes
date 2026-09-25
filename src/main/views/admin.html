@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Admin | Memes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/meme.css?v=5">
+</head>
+<body>
+    <div class="stage">
+        <p class="brand">MEMES</p>
+        <div class="container">
+            <h1>ADMIN</h1>
+            <p class="tagline">PAINEL DO CHEFE</p>
+
+            <form action="../meme" method="post">
+                <div class="form-group">
+                    <label for="titulo">Título</label>
+                    <input
+                        type="text"
+                        id="titulo"
+                        name="titulo"
+                        placeholder="Nome do meme"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="tags">Tags</label>
+                    <input
+                        type="text"
+                        id="tags"
+                        name="tags"
+                        placeholder="gato, funny, peteco"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="caminho">Caminho</label>
+                    <input
+                        type="text"
+                        id="caminho"
+                        name="caminho"
+                        placeholder="../gifs/peteco.gif"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="tipo">Tipo</label>
+                    <select id="tipo" name="tipo" required>
+                        <option value="img">Imagem</option>
+                        <option value="gif">GIF</option>
+                    </select>
+                </div>
+
+                <p id="erro-meme" class="erro-login">
+                    Não foi possível cadastrar o meme.
+                </p>
+
+                <button type="submit">ADICIONAR MEME</button>
+            </form>
+
+            <a class="btn-acao" href="/logout">SAIR</a>
+
+            <img
+                class="gif-destaque"
+                src="../img/boss.jpg"
+                alt="Boss"
+            >
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("erro")) {
+            document.getElementById("erro-meme").classList.add("visivel");
+            document.querySelector(".container").classList.add("tremendo");
+        }
+    </script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-package org.example;
+package org.example.filter;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebFilter({ "*.html", "*.css", "*.gif", "*.jpg", "/login", "/home", "/admin", "/logout" })
+@WebFilter({ "*.html", "*.css", "*.gif", "*.jpg", "/login", "/cadastro", "/home", "/buscar", "/download", "/admin", "/meme", "/logout", "/excluir" })
 public class NoCacheFilter implements Filter {
 
     @Override
