@@ -61,6 +61,8 @@
     </div>
 
     <script>
+        sessionStorage.removeItem("memes-busca");
+
         const params = new URLSearchParams(window.location.search);
         if (params.has("erro")) {
             document.getElementById("erro-login").classList.add("visivel");

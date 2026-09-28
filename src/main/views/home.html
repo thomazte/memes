@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/meme.css?v=7">
+    <link rel="stylesheet" href="../css/meme.css?v=9">
 </head>
 <body>
     <div class="stage">
@@ -44,17 +44,37 @@
             </form>
 
             <p id="msg-busca" class="mensagem-destaque" hidden>Nenhum meme encontrado.</p>
-            <div class="feed-grade" id="feed-grade"></div>
 
-            <a class="btn-acao" href="/excluir">EXCLUIR CONTA</a>
-            <a class="btn-acao" href="/logout">SAIR</a>
+            <div class="feed-grade" id="feed-grade"></div>
+            <div class="feed-rodape">
+                <nav id="paginacao" class="feed-paginacao" hidden>
+                    <button type="button" id="pagina-anterior">ANTERIOR</button>
+                    <span id="pagina-info" class="feed-pagina-info"></span>
+                    <button type="button" id="pagina-proxima">PRÓXIMA</button>
+                </nav>
+                <div class="feed-acoes">
+                    <a id="excluir-conta" class="btn-acao" href="/excluir">EXCLUIR CONTA</a>
+                    <a class="btn-acao" href="/logout">SAIR</a>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
         const form = document.getElementById("form-busca");
+        const painel = document.querySelector(".container-feed");
         const grade = document.getElementById("feed-grade");
         const msg = document.getElementById("msg-busca");
+        const linkExcluir = document.getElementById("excluir-conta");
+        const paginacao = document.getElementById("paginacao");
+        const paginaInfo = document.getElementById("pagina-info");
+        const btnAnterior = document.getElementById("pagina-anterior");
+        const btnProxima = document.getElementById("pagina-proxima");
+        const CHAVE_BUSCA = "memes-busca";
+        const POR_PAGINA = 6;
+
+        let memesAtuais = [];
+        let paginaAtual = 1;
 
         form.addEventListener("submit", async (event) => {
             event.preventDefault();
@@ -63,6 +83,9 @@
             if (!q) return;
 
             grade.innerHTML = "";
+            paginacao.hidden = true;
+            linkExcluir.hidden = true;
+            painel.classList.add("feed-com-resultado");
             msg.hidden = true;
             msg.textContent = "Buscando memes...";
             msg.hidden = false;
@@ -77,22 +100,36 @@
                     return;
                 }
                 const memes = await resp.json();
-                renderizar(memes);
+                sessionStorage.setItem(CHAVE_BUSCA, JSON.stringify({ q, tipo, memes, pagina: 1 }));
+                renderizar(memes, 1);
             } catch (e) {
+                painel.classList.remove("feed-com-resultado");
+                linkExcluir.hidden = false;
                 msg.textContent = "Falha na busca. Tente de novo.";
                 msg.hidden = false;
             }
         });
 
-        function renderizar(memes) {
+        function renderizar(memes, pagina) {
+            memesAtuais = Array.isArray(memes) ? memes : [];
             grade.innerHTML = "";
-            if (!Array.isArray(memes) || memes.length === 0) {
+            linkExcluir.hidden = true;
+            painel.classList.toggle("feed-com-resultado", memesAtuais.length > 0);
+
+            if (memesAtuais.length === 0) {
+                paginacao.hidden = true;
                 msg.textContent = "Nenhum meme encontrado.";
                 msg.hidden = false;
                 return;
             }
+
             msg.hidden = true;
-            for (const meme of memes) {
+            const totalPaginas = Math.ceil(memesAtuais.length / POR_PAGINA);
+            paginaAtual = Math.min(Math.max(pagina || 1, 1), totalPaginas);
+            const inicio = (paginaAtual - 1) * POR_PAGINA;
+            const fatia = memesAtuais.slice(inicio, inicio + POR_PAGINA);
+
+            for (const meme of fatia) {
                 const card = document.createElement("article");
                 card.className = "feed-card feed-card-clicavel";
                 card.title = "Clique para baixar";
@@ -116,7 +153,38 @@
                 card.addEventListener("click", () => baixarMeme(meme));
                 grade.appendChild(card);
             }
+
+            paginacao.hidden = totalPaginas <= 1;
+            paginaInfo.textContent = paginaAtual + " / " + totalPaginas;
+            btnAnterior.disabled = paginaAtual <= 1;
+            btnProxima.disabled = paginaAtual >= totalPaginas;
+            guardarPagina();
         }
+
+        function guardarPagina() {
+            const bruto = sessionStorage.getItem(CHAVE_BUSCA);
+            if (!bruto) return;
+            try {
+                const salva = JSON.parse(bruto);
+                salva.pagina = paginaAtual;
+                sessionStorage.setItem(CHAVE_BUSCA, JSON.stringify(salva));
+            } catch (e) {
+                sessionStorage.removeItem(CHAVE_BUSCA);
+            }
+        }
+
+        function irParaPagina(pagina) {
+            renderizar(memesAtuais, pagina);
+        }
+
+        btnAnterior.addEventListener("click", () => irParaPagina(paginaAtual - 1));
+        btnProxima.addEventListener("click", () => irParaPagina(paginaAtual + 1));
+
+        document.querySelector(".feed-acoes").addEventListener("click", (event) => {
+            if (event.target.closest("a")) {
+                sessionStorage.removeItem(CHAVE_BUSCA);
+            }
+        });
 
         async function baixarMeme(meme) {
             msg.hidden = true;
@@ -167,6 +235,20 @@
                 msg.hidden = false;
             }
         }
+
+        (function restaurarBusca() {
+            const bruto = sessionStorage.getItem(CHAVE_BUSCA);
+            if (!bruto) return;
+            try {
+                const salva = JSON.parse(bruto);
+                if (!salva || !salva.q || !Array.isArray(salva.memes)) return;
+                document.getElementById("q").value = salva.q;
+                document.getElementById("tipo").value = salva.tipo || "";
+                renderizar(salva.memes, salva.pagina || 1);
+            } catch (e) {
+                sessionStorage.removeItem(CHAVE_BUSCA);
+            }
+        })();
     </script>
 </body>
 </html>

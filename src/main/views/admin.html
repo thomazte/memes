@@ -78,6 +78,10 @@
     </div>
 
     <script>
+        document.querySelector('a[href="/logout"]').addEventListener("click", () => {
+            sessionStorage.removeItem("memes-busca");
+        });
+
         const params = new URLSearchParams(window.location.search);
         if (params.has("erro")) {
             document.getElementById("erro-meme").classList.add("visivel");
