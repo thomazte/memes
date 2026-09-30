@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/meme.css?v=9">
+    <link rel="stylesheet" href="../css/meme.css?v=10">
 </head>
 <body>
     <div class="stage">
@@ -60,6 +60,16 @@
         </div>
     </div>
 
+    <div id="opcoes-meme" class="opcoes-meme" hidden>
+        <div class="opcoes-painel" role="dialog" aria-modal="true" aria-labelledby="opcoes-titulo">
+            <p id="opcoes-titulo" class="opcoes-titulo"></p>
+            <button type="button" id="opcao-baixar">Baixar</button>
+            <button type="button" id="opcao-cleiton">Enviar pro Cleiton</button>
+            <button type="button" id="opcao-fechar" class="opcao-fechar">Fechar</button>
+            <p id="opcoes-aviso" class="opcoes-aviso" hidden></p>
+        </div>
+    </div>
+
     <script>
         const form = document.getElementById("form-busca");
         const painel = document.querySelector(".container-feed");
@@ -72,9 +82,13 @@
         const btnProxima = document.getElementById("pagina-proxima");
         const CHAVE_BUSCA = "memes-busca";
         const POR_PAGINA = 6;
+        const painelOpcoes = document.getElementById("opcoes-meme");
+        const tituloOpcoes = document.getElementById("opcoes-titulo");
+        const avisoOpcoes = document.getElementById("opcoes-aviso");
 
         let memesAtuais = [];
         let paginaAtual = 1;
+        let memeSelecionado = null;
 
         form.addEventListener("submit", async (event) => {
             event.preventDefault();
@@ -132,7 +146,7 @@
             for (const meme of fatia) {
                 const card = document.createElement("article");
                 card.className = "feed-card feed-card-clicavel";
-                card.title = "Clique para baixar";
+                card.title = "Clique para baixar ou enviar pro Cleiton";
 
                 const img = document.createElement("img");
                 img.src = meme.caminho;
@@ -150,7 +164,7 @@
                 card.appendChild(img);
                 card.appendChild(badge);
                 card.appendChild(titulo);
-                card.addEventListener("click", () => baixarMeme(meme));
+                card.addEventListener("click", () => abrirOpcoes(meme));
                 grade.appendChild(card);
             }
 
@@ -186,11 +200,65 @@
             }
         });
 
-        async function baixarMeme(meme) {
-            msg.hidden = true;
-            msg.textContent = "Baixando...";
-            msg.hidden = false;
+        function abrirOpcoes(meme) {
+            memeSelecionado = meme;
+            tituloOpcoes.textContent = meme.titulo || "Meme";
+            avisoOpcoes.hidden = true;
+            avisoOpcoes.textContent = "";
+            painelOpcoes.hidden = false;
+        }
 
+        function fecharOpcoes() {
+            painelOpcoes.hidden = true;
+            memeSelecionado = null;
+        }
+
+        painelOpcoes.addEventListener("click", (event) => {
+            if (event.target === painelOpcoes) fecharOpcoes();
+        });
+
+        document.getElementById("opcao-fechar").addEventListener("click", fecharOpcoes);
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && !painelOpcoes.hidden) fecharOpcoes();
+        });
+
+        document.getElementById("opcao-baixar").addEventListener("click", () => {
+            const meme = memeSelecionado;
+            fecharOpcoes();
+            if (meme) baixarMeme(meme, true);
+        });
+
+        function salvarArquivo(arquivo) {
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(arquivo);
+            link.download = arquivo.name;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(link.href);
+        }
+
+        document.getElementById("opcao-cleiton").addEventListener("click", () => {
+            const meme = memeSelecionado;
+            if (!meme) return;
+
+            let texto = "!s";
+            const caminho = meme.caminho || "";
+            if (caminho.startsWith("http://") || caminho.startsWith("https://")) {
+                texto = "!s " + caminho;
+            }
+
+            window.open(
+                "https://wa.me/556284818765?text=" + encodeURIComponent(texto),
+                "_blank",
+                "noopener,noreferrer"
+            );
+            avisoOpcoes.hidden = false;
+            avisoOpcoes.textContent = "Conversa do Cleiton aberta, com !s e o link da imagem prontos para enviar.";
+        });
+
+        async function obterArquivoMeme(meme) {
             const params = new URLSearchParams({
                 url: meme.caminho,
                 titulo: meme.titulo || "meme",
@@ -201,13 +269,9 @@
                 const resp = await fetch("../download?" + params.toString());
                 if (resp.status === 401) {
                     window.location.href = "../views/login.html?erro=sessao";
-                    return;
+                    return null;
                 }
-                if (!resp.ok) {
-                    msg.textContent = "Falha no download. Tente outro meme.";
-                    msg.hidden = false;
-                    return;
-                }
+                if (!resp.ok) return null;
 
                 const blob = await resp.blob();
                 const disposition = resp.headers.get("Content-Disposition") || "";
@@ -221,18 +285,48 @@
                     nome = "meme.jpg";
                 }
 
-                const link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
-                link.download = nome;
-                document.body.appendChild(link);
-                link.click();
-                link.remove();
-                URL.revokeObjectURL(link.href);
+                let tipo = blob.type;
+                if (!tipo || !tipo.startsWith("image/")) {
+                    if (nome.endsWith(".gif") || (meme.tipo || "").toLowerCase() === "gif") {
+                        tipo = "image/gif";
+                    } else if (nome.endsWith(".png")) {
+                        tipo = "image/png";
+                    } else if (nome.endsWith(".webp")) {
+                        tipo = "image/webp";
+                    } else {
+                        tipo = "image/jpeg";
+                    }
+                }
 
-                window.location.href = "../views/download-ok.html";
+                return new File([blob], nome, { type: tipo });
+            } catch (e) {
+                return null;
+            }
+        }
+
+        async function baixarMeme(meme, confirmar) {
+            msg.hidden = true;
+            msg.textContent = "Baixando...";
+            msg.hidden = false;
+
+            try {
+                const arquivo = await obterArquivoMeme(meme);
+                if (!arquivo) {
+                    msg.textContent = "Falha no download. Tente outro meme.";
+                    msg.hidden = false;
+                    return false;
+                }
+
+                salvarArquivo(arquivo);
+
+                if (confirmar) {
+                    window.location.href = "../views/download-ok.html";
+                }
+                return true;
             } catch (e) {
                 msg.textContent = "Falha no download. Tente de novo.";
                 msg.hidden = false;
+                return false;
             }
         }
 

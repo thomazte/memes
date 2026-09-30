@@ -478,6 +478,60 @@ body:has(.container-feed) {
     margin-top: 4px;
 }
 
+.opcoes-meme {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(17, 17, 17, 0.72);
+}
+
+.opcoes-meme[hidden] {
+    display: none;
+}
+
+.opcoes-painel {
+    width: min(92vw, 380px);
+    padding: 22px 20px 18px;
+    background: var(--panel);
+    text-align: center;
+    border: 5px solid var(--ink);
+    border-radius: 4px;
+    box-shadow: 8px 8px 0 var(--meme-magenta);
+}
+
+.opcoes-titulo {
+    margin: 0;
+    font-family: Anton, Impact, sans-serif;
+    font-size: 1.35rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.opcoes-painel button {
+    margin-top: 12px;
+}
+
+#opcao-cleiton {
+    background: var(--meme-cyan);
+}
+
+.opcao-fechar {
+    background: #fff;
+}
+
+.opcoes-aviso {
+    margin: 14px 0 0;
+    font-size: 0.95rem;
+    line-height: 1.35;
+}
+
 .feed-tipo {
     display: inline-block;
     margin-top: 6px;
