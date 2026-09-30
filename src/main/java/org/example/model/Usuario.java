@@ -5,12 +5,14 @@ public class Usuario {
     private String login;
     private String senha;
     private boolean status;
+    private String perfil;
 
-    public Usuario(int id, String login, String senha, boolean status) {
+    public Usuario(int id, String login, String senha, boolean status, String perfil) {
         this.id = id;
         this.login = login;
         this.senha = senha;
         this.status = status;
+        this.perfil = perfil;
     }
 
     public int getId() {
@@ -25,6 +27,7 @@ public class Usuario {
     public boolean getStatus() {
         return status;
     }
+    public String getPerfil() { return perfil; }
 
     public void setId(int id) {
         this.id = id;
@@ -38,4 +41,5 @@ public class Usuario {
     public void setStatus(boolean status) {
         this.status = status;
     }
+    public void setPerfil(String perfil) { this.perfil = perfil; }
 }

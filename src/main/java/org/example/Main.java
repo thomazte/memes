@@ -10,11 +10,11 @@ public class Main {
 
     public static void main(String[] args) {
         UsuarioDAO dao = new UsuarioDAO();
-        cadastrar(dao, "teste");
-        cadastrar(dao, "admin");
+        cadastrar(dao, "teste", "usuario");
+        cadastrar(dao, "admin", "admin");
     }
 
-    private static void cadastrar(UsuarioDAO dao, String login) {
+    private static void cadastrar(UsuarioDAO dao, String login, String perfil) {
         String senha = lerSenha("Senha para '" + login + "': ");
 
         if (senha == null || senha.isBlank()) {
@@ -22,7 +22,7 @@ public class Main {
             return;
         }
 
-        boolean ok = dao.cadastrar(new Usuario(0, login, senha, true));
+        boolean ok = dao.cadastrar(new Usuario(0, login, senha, true, perfil));
         System.out.println(ok
                 ? "OK: " + login + " cadastrado no banco (senha com BCrypt)."
                 : "ERRO: falha ao cadastrar " + login);

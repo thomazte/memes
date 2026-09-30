@@ -42,14 +42,4 @@ public class Validacao {
         }
         return "img".equalsIgnoreCase(tipo) || "gif".equalsIgnoreCase(tipo);
     }
-
-    public String getPerfil(String usuario) {
-        if (usuario == null || usuario.isBlank()) {
-            return null;
-        }
-        if ("admin".equalsIgnoreCase(usuario)) {
-            return "admin";
-        }
-        return "usuario";
-    }
 }

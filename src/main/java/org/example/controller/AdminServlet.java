@@ -32,8 +32,8 @@ public class AdminServlet extends HttpServlet {
             return;
         }
 
-        String login = (String) session.getAttribute("usuario");
-        if (!"admin".equalsIgnoreCase(login)) {
+        String perfil = (String) session.getAttribute("perfil");
+        if (!"admin".equalsIgnoreCase(perfil)) {
             resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }
@@ -56,8 +56,8 @@ public class AdminServlet extends HttpServlet {
             return;
         }
 
-        String login = (String) session.getAttribute("usuario");
-        if (!"admin".equalsIgnoreCase(login)) {
+        String perfil = (String) session.getAttribute("perfil");
+        if (!"admin".equalsIgnoreCase(perfil)) {
             resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }

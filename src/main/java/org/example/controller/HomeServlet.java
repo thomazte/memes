@@ -35,8 +35,8 @@ public class HomeServlet extends HttpServlet {
             return;
         }
 
-        String login = (String) session.getAttribute("usuario");
-        if ("admin".equalsIgnoreCase(login) && "/home".equals(req.getServletPath())) {
+        String perfil = (String) session.getAttribute("perfil");
+        if ("admin".equalsIgnoreCase(perfil) && "/home".equals(req.getServletPath())) {
             resp.sendRedirect(req.getContextPath() + "/admin");
             return;
         }

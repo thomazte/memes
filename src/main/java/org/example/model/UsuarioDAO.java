@@ -11,7 +11,7 @@ public class UsuarioDAO {
 
     public boolean cadastrar(Usuario usuario) {
         String sql = """
-                INSERT INTO usuarios (login, senha, status) VALUES (?, ?, ?)
+                INSERT INTO usuarios (login, senha, status, perfil) VALUES (?, ?, ?, ?)
                 """;
         String senhaHash = BCrypt.hashpw(usuario.getSenha(), BCrypt.gensalt(12));
 
@@ -20,6 +20,7 @@ public class UsuarioDAO {
             stmt.setString(1, usuario.getLogin());
             stmt.setString(2, senhaHash);
             stmt.setBoolean(3, usuario.getStatus());
+            stmt.setString(4, usuario.getPerfil());
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -30,7 +31,7 @@ public class UsuarioDAO {
 
     public Usuario buscarPorLogin(String login) {
         String sql = """
-                SELECT id, login, senha, status
+                SELECT id, login, senha, status, perfil
                 FROM usuarios
                 WHERE login = ?
                 """;
@@ -44,7 +45,8 @@ public class UsuarioDAO {
                         rs.getInt("id"),
                         rs.getString("login"),
                         rs.getString("senha"),
-                        rs.getBoolean("status")
+                        rs.getBoolean("status"),
+                        rs.getString("perfil")
                 );
             }
         } catch (SQLException e) {
@@ -53,9 +55,10 @@ public class UsuarioDAO {
         return null;
     }
 
-    public boolean excluir(int id) {
+    public boolean inativarUsuario(int id) {
         String sql = """
-                DELETE FROM usuarios
+                UPDATE usuarios
+                SET status = false
                 WHERE id = ?
                 """;
 

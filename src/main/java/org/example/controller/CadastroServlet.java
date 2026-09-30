@@ -33,7 +33,7 @@ public class CadastroServlet extends HttpServlet {
             return;
         }
 
-        Usuario novo = new Usuario(0, login, senha, true);
+        Usuario novo = new Usuario(0, login, senha, true, "usuario");
         boolean cadastrado = usuarioDAO.cadastrar(novo);
 
         if (!cadastrado) {

@@ -21,7 +21,7 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         if ("/excluir".equals(req.getServletPath())) {
-            excluirUsuario(req, resp);
+            inativarUsuario(req, resp);
             return;
         }
         resp.sendRedirect(req.getContextPath() + "/views/login.html");
@@ -31,7 +31,7 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         if ("/excluir".equals(req.getServletPath())) {
-            excluirUsuario(req, resp);
+            inativarUsuario(req, resp);
             return;
         }
 
@@ -44,7 +44,7 @@ public class LoginServlet extends HttpServlet {
         }
 
         Usuario autenticado = usuarioDAO.buscarPorLogin(login);
-        String perfil = validacao.getPerfil(autenticado.getLogin());
+        String perfil = autenticado.getPerfil();
 
         HttpSession session = req.getSession(true);
         session.setAttribute("usuarioId", autenticado.getId());
@@ -58,7 +58,7 @@ public class LoginServlet extends HttpServlet {
         }
     }
 
-    private void excluirUsuario(HttpServletRequest req, HttpServletResponse resp)
+    private void inativarUsuario(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
         HttpSession session = req.getSession(false);
 
@@ -68,11 +68,11 @@ public class LoginServlet extends HttpServlet {
         }
 
         int usuarioId = (Integer) session.getAttribute("usuarioId");
-        boolean excluido = usuarioDAO.excluir(usuarioId);
+        boolean inativado = usuarioDAO.inativarUsuario(usuarioId);
 
         session.invalidate();
 
-        if (!excluido) {
+        if (!inativado) {
             resp.sendRedirect(req.getContextPath() + "/views/login.html?erro=1");
             return;
         }

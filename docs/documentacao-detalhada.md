@@ -92,7 +92,8 @@ CREATE TABLE usuarios (
     id SERIAL PRIMARY KEY,
     login VARCHAR(100) UNIQUE NOT NULL,
     senha VARCHAR(255) NOT NULL,
-    status BOOLEAN NOT NULL DEFAULT true
+    status BOOLEAN NOT NULL DEFAULT true,
+    perfil VARCHAR(20) NOT NULL DEFAULT 'usuario'
 );
 ```
 
