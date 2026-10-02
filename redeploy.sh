@@ -7,6 +7,7 @@ TOMCAT_WEBAPPS="/var/lib/tomcat10/webapps"
 WAR_NAME="Memes-1.0-SNAPSHOT.war"
 WAR_PATH="$PROJECT_DIR/target/$WAR_NAME"
 APP_URL="http://localhost:8080/login"
+PUBLIC_URL="https://memes.137.131.137.227.sslip.io/login"
 
 echo "=== Redeploy Memes ==="
 echo
@@ -37,7 +38,8 @@ echo
 echo "Aguardando aplicacao..."
 for i in $(seq 1 30); do
   if curl -fsS "$APP_URL" >/dev/null 2>&1; then
-    echo "Pronto! Acesse: $APP_URL"
+    echo "Pronto! Tomcat local: $APP_URL"
+    echo "Site publicado: $PUBLIC_URL"
     exit 0
   fi
   sleep 2

@@ -134,10 +134,24 @@ O WAR gerado fica em `target/Memes-1.0-SNAPSHOT.war`.
 
 Scripts auxiliares na raiz:
 
-- `deploy.sh` — deploy com backup e rollback
-- `redeploy.sh` — para Tomcat, build limpo e sobe de novo
+- `deploy.sh` — deploy local com backup e rollback
+- `redeploy.sh` — para o Tomcat local, build limpo e sobe de novo
+- `deploy-vps.sh` — publica o WAR na VPS
+- `setup-https.sh` — certificado TLS e redirecionamento na VPS (o `deploy-vps.sh` chama se o certificado ainda não existir)
 
-Após o deploy, acesse: `http://localhost:8080/login`
+Tomcat na máquina de desenvolvimento: `http://localhost:8080/login`
+
+Site publicado: `https://memes.137.131.137.227.sslip.io/login`
+
+### 6.4 HTTPS
+
+O endereço público usa HTTPS. O nginx na VPS recebe o navegador na porta 443, com certificado Let's Encrypt emitido pelo Certbot para `memes.137.131.137.227.sslip.io`. A porta 80 responde com redirecionamento para HTTPS.
+
+O `setup-https.sh` também libera a porta 443 no firewall da VM (`iptables`). Na Oracle Cloud ainda é preciso uma regra de entrada na lista de segurança da VCN: origem `0.0.0.0/0`, protocolo TCP, porta de destino `443`. Sem essa regra o certificado existe, mas a conexão na porta 443 expira.
+
+O nginx encaminha a requisição para o Tomcat em `127.0.0.1:8080`, enviando o cabeçalho `X-Forwarded-Proto`. A `RemoteIpValve` do Tomcat trata essa requisição como segura, e o cookie de sessão sai com o atributo `Secure`. Login e senha seguem criptografados entre o navegador e a VPS.
+
+Na máquina de desenvolvimento o Tomcat segue em HTTP na porta 8080. Os scripts locais conferem esse endereço. O `deploy-vps.sh` confere o Tomcat na VPS em `127.0.0.1:8080` e informa a URL pública HTTPS.
 
 ---
 

@@ -8,6 +8,7 @@ TOMCAT_WEBAPPS="/var/lib/tomcat10/webapps"
 WAR_NAME="Memes-1.0-SNAPSHOT.war"
 WAR_PATH="$PROJECT_DIR/target/$WAR_NAME"
 APP_CHECK_URL="http://localhost:8080/login"
+PUBLIC_URL="https://memes.137.131.137.227.sslip.io/login"
 
 USE_CLEAN=false
 STATUS_ONLY=false
@@ -165,4 +166,5 @@ if ! check_endpoint; then
 fi
 
 echo "Deploy concluido com sucesso!"
-echo "Acesse: $APP_CHECK_URL"
+echo "Tomcat local: $APP_CHECK_URL"
+echo "Site publicado: $PUBLIC_URL"

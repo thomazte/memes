@@ -12,7 +12,8 @@ Java 18 · Jakarta Servlet · Tomcat 10 · Maven · PostgreSQL · HTML/CSS/JS
 
 ```bash
 mvn clean package
-# deploy do WAR no Tomcat 10 → http://localhost:8080/login
+# Tomcat local → http://localhost:8080/login
+# site publicado → https://memes.137.131.137.227.sslip.io/login
 ```
 
 ## Documentação
